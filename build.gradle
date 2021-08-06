@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.yaxon.hvac"
+        minSdkVersion 29
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(rootProject.ext.signRelease["storeFile"])
+            storePassword rootProject.ext.signRelease["storePassword"]
+            keyAlias rootProject.ext.signRelease["keyAlias"]
+            keyPassword rootProject.ext.signRelease["keyPassword"]
+        }
+
+        debug {
+            storeFile file(rootProject.ext.signDebug["storeFile"])
+            storePassword rootProject.ext.signDebug["storePassword"]
+            keyAlias rootProject.ext.signDebug["keyAlias"]
+            keyPassword rootProject.ext.signDebug["keyPassword"]
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                if (variant.buildType.name == "release") {
+                    variant.packageApplication.outputDirectory = new File(project.rootDir.absolutePath + "/third_apps/YX_Hvac/")
+                }
+                outputFileName = "YX_Hvac.apk"
+            }
+    }
+
+//    allprojects {
+//        gradle.projectsEvaluated {
+//            tasks.withType(JavaCompile) {
+//                options.compilerArgs.add("-Xbootclasspath/p:../sdklibs/framework_classes.jar")
+//            }
+//        }
+//    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation project(':YXLib_UIStyleBase')
+    implementation project(':YX_HvacSDK')
+}
